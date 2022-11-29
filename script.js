@@ -1,6 +1,7 @@
 const display = document.getElementById("display");
 const numberGroup = document.getElementById("numbers");
 const operatorGroup = document.getElementById("operators");
+const actionGroup = document.getElementById("actions");
 
 // Create number keys
 for (i = 9; i >= 0; i--) {
@@ -17,8 +18,38 @@ for (i = 9; i >= 0; i--) {
   });
 }
 
+// Add dot key to the number group
+const dotKey = document.createElement("div");
+dotKey.classList.add("key");
+dotKey.textContent = ".";
+numberGroup.appendChild(dotKey);
+
+// Create action keys
+const actions = [
+  {
+    name: "clear",
+    symbol: "C",
+  },
+  {
+    name: "sign",
+    symbol: "±",
+  },
+  {
+    name: "percent",
+    symbol: "%",
+  },
+];
+
+actions.forEach((action) => {
+  const div = document.createElement("div");
+  div.classList.add("key");
+  div.setAttribute("id", action.name);
+  div.textContent = action.symbol;
+  actionGroup.appendChild(div);
+});
+
 // Create operator keys
-const operatorArray = [
+const operators = [
   {
     name: "divide",
     symbol: "÷",
@@ -41,10 +72,10 @@ const operatorArray = [
   },
 ];
 
-operatorArray.forEach((operator) => {
+operators.forEach((operator) => {
   const div = document.createElement("div");
   div.classList.add("key");
-  operatorGroup.appendChild(div);
   div.setAttribute("id", operator.name);
   div.textContent = operator.symbol;
+  operatorGroup.appendChild(div);
 });
