@@ -23,7 +23,8 @@ body {
 /* Display */
 
 #display {
-  font-size: 2rem;
+  font-size: 3rem;
+  height: 3rem;
   display: flex;
   justify-content: end;
   line-height: 1;
@@ -60,8 +61,10 @@ body {
 }
 
 #operators > div {
-  background: #cc9600;
+  background: #ff9f0a;
+  font-weight: 500;
   color: white;
+  font-size: 2rem;
 }
 #functions {
   margin-bottom: var(--space);
@@ -90,7 +93,4 @@ body {
 #num6,
 #num3 {
   grid-column-start: 3;
-}
-
-.numKey {
 }
