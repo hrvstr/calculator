@@ -1,0 +1,49 @@
+:root {
+  --foreground: #d9e5f2;
+  --background: #1b1c1d;
+  --background-light: #242424;
+  --black-light: #505559;
+  --radius: 0.5rem;
+}
+
+html {
+  background: var(--background);
+}
+
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Layout */
+
+main {
+}
+
+/* Number Block */
+
+#numBlock {
+  background: var(--background-light);
+  border-radius: var(--radius);
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: auto auto auto;
+  grid-auto-flow: dense;
+  gap: 1rem;
+}
+
+.numKeys {
+  color: var(--foreground);
+  background: var(--black-light);
+  display: flex;
+  font-family: ui-monospace;
+  font-weight: 500;
+  border-radius: var(--radius);
+  font-size: 1.5rem;
+  justify-content: center;
+  align-items: center;
+  width: 5rem;
+  height: 5rem;
+}
