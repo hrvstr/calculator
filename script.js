@@ -1,6 +1,6 @@
 const display = document.getElementById("display");
-const numBlock = document.getElementById("numBlock");
-const operators = document.getElementById("operators");
+const numberGroup = document.getElementById("numbers");
+const operatorGroup = document.getElementById("operators");
 
 // Create number keys
 for (i = 9; i >= 0; i--) {
@@ -9,7 +9,7 @@ for (i = 9; i >= 0; i--) {
   div.classList.add("key");
   div.setAttribute("id", "num" + keyNumber);
   div.textContent = keyNumber;
-  numBlock.appendChild(div);
+  numberGroup.appendChild(div);
 
   // Add number to display
   div.addEventListener("click", () => {
@@ -44,7 +44,7 @@ const operatorArray = [
 operatorArray.forEach((operator) => {
   const div = document.createElement("div");
   div.classList.add("key");
-  operators.appendChild(div);
+  operatorGroup.appendChild(div);
   div.setAttribute("id", operator.name);
   div.textContent = operator.symbol;
 });

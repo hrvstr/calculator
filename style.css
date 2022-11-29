@@ -47,7 +47,7 @@ body {
   height: 5rem;
 }
 
-#keyBlock {
+#keys {
   display: flex;
 }
 
@@ -66,6 +66,7 @@ body {
   color: white;
   font-size: 2rem;
 }
+
 #functions {
   margin-bottom: var(--space);
   grid-template-columns: auto auto auto;
@@ -78,7 +79,7 @@ body {
 
 /* Number Block */
 
-#numBlock {
+#numbers {
   grid-auto-flow: dense;
   grid-template-columns: auto auto auto;
 }
