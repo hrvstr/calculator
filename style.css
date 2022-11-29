@@ -31,14 +31,51 @@ body {
   border-radius: var(--radius);
 }
 
+/* Keys */
+
+.key {
+  color: var(--foreground);
+  background: var(--black-light);
+  display: flex;
+  font-weight: 500;
+  border-radius: var(--radius);
+  font-size: 1.5rem;
+  justify-content: center;
+  align-items: center;
+  width: 5rem;
+  height: 5rem;
+}
+
+#keyBlock {
+  display: flex;
+}
+
+.keyGroup {
+  gap: var(--space);
+  display: grid;
+}
+
+#operators {
+  margin-left: var(--space);
+}
+
+#operators > div {
+  background: #cc9600;
+  color: white;
+}
+#functions {
+  margin-bottom: var(--space);
+  grid-template-columns: auto auto auto;
+}
+
+#functions > div {
+  background: #bdc3c7;
+  color: var(--background);
+}
+
 /* Number Block */
 
 #numBlock {
-  background: var(--background-light);
-  border-radius: var(--radius);
-  padding: var(--space);
-  gap: var(--space);
-  display: grid;
   grid-auto-flow: dense;
   grid-template-columns: auto auto auto;
 }
@@ -55,15 +92,5 @@ body {
   grid-column-start: 3;
 }
 
-.numKeys {
-  color: var(--foreground);
-  background: var(--black-light);
-  display: flex;
-  font-weight: 500;
-  border-radius: var(--radius);
-  font-size: 1.5rem;
-  justify-content: center;
-  align-items: center;
-  width: 5rem;
-  height: 5rem;
+.numKey {
 }
