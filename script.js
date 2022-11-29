@@ -29,6 +29,9 @@ const actions = [
   {
     name: "clear",
     symbol: "C",
+    function: () => {
+      display.textContent = "";
+    },
   },
   {
     name: "sign",
@@ -46,6 +49,7 @@ actions.forEach((action) => {
   div.setAttribute("id", action.name);
   div.textContent = action.symbol;
   actionGroup.appendChild(div);
+  div.addEventListener("click", action.function);
 });
 
 // Create operator keys

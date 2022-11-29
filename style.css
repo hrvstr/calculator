@@ -2,7 +2,9 @@
   --foreground: #d9e5f2;
   --background: #1b1c1d;
   --background-light: #242424;
-  --black-light: #505559;
+  --gray: #505559;
+  --gray-light: #bdc3c7;
+  --orange: #ff9f0a;
   --radius: 0.5rem;
   --space: 1rem;
 }
@@ -38,7 +40,7 @@ body {
 .key {
   cursor: pointer;
   color: var(--foreground);
-  background: var(--black-light);
+  background: var(--gray);
   display: flex;
   font-weight: 500;
   border-radius: var(--radius);
@@ -69,8 +71,7 @@ body {
 }
 
 #operators > div {
-  background: #ff9f0a;
-  font-weight: 500;
+  background: var(--orange);
   color: white;
   font-size: 2rem;
 }
@@ -81,7 +82,7 @@ body {
 }
 
 #actions > div {
-  background: #bdc3c7;
+  background: var(--gray-light);
   color: var(--background);
 }
 
