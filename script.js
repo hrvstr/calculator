@@ -18,19 +18,29 @@ let calcResult;
 
 // States
 let clearDisplay = false;
+let clearAll = true;
 
-// let test = "-1";
-// console.log(test);
-// test += ",1";
-// console.log(test);
-// test = parseFloat(test);
-// console.log(test);
+// Functions
+function toggleClearDisplay() {
+  if (clearDisplay) {
+    display.textContent = "";
+    clearDisplay = !clearDisplay;
+  }
+}
 
 function resetOperators() {
   operatorGroup.querySelectorAll("div").forEach((key) => {
     key.style.background = accentColor;
     key.style.color = primaryColor;
   });
+}
+
+function addInput(key) {
+  if (clearAll) {
+    clearKey.textContent = "C";
+  }
+  display.textContent += key;
+  input += key;
 }
 
 // Create number keys
@@ -44,16 +54,9 @@ for (i = 9; i >= 0; i--) {
 
   // Add number to display
   div.addEventListener("click", () => {
-    // Remove highlight from active operator key
     resetOperators();
-    // Clear display for new input
-    if (clearDisplay) {
-      display.textContent = "";
-      clearDisplay = !clearDisplay;
-    }
-    // Add typed number to display
-    display.textContent += keyNumber;
-    input += keyNumber;
+    toggleClearDisplay();
+    addInput(keyNumber);
   });
 }
 
@@ -63,8 +66,9 @@ dotKey.classList.add("key");
 dotKey.textContent = ".";
 numberGroup.appendChild(dotKey);
 dotKey.addEventListener("click", () => {
-  input += dotKey.textContent;
-  display.textContent += dotKey.textContent;
+  resetOperators();
+  toggleClearDisplay();
+  addInput(dotKey.textContent);
 });
 
 // Create action keys
@@ -106,6 +110,8 @@ actions.forEach((action) => {
   actionGroup.appendChild(div);
   div.addEventListener("click", action.function);
 });
+
+const clearKey = document.getElementById("clear");
 
 // Create operator keys
 const operators = [
