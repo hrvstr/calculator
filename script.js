@@ -1,7 +1,29 @@
+// Nodes
 const display = document.getElementById("display");
 const numberGroup = document.getElementById("numbers");
 const operatorGroup = document.getElementById("operators");
 const actionGroup = document.getElementById("actions");
+
+// Colors
+const bodyStyle = getComputedStyle(document.body);
+const primaryColor = bodyStyle.getPropertyValue("--primary");
+const accentColor = bodyStyle.getPropertyValue("--accent");
+
+// Calc
+let input = "";
+let inputA;
+let inputB;
+let calcResult;
+
+// States
+let clearDisplay = false;
+
+function resetOperators() {
+  operatorGroup.querySelectorAll("div").forEach((key) => {
+    key.style.background = accentColor;
+    key.style.color = primaryColor;
+  });
+}
 
 // Create number keys
 for (i = 9; i >= 0; i--) {
@@ -14,7 +36,10 @@ for (i = 9; i >= 0; i--) {
 
   // Add number to display
   div.addEventListener("click", () => {
+    resetOperators();
+    clearDisplay ? (display.textContent = "") : null;
     display.textContent += keyNumber;
+    input += keyNumber;
   });
 }
 
@@ -28,9 +53,12 @@ numberGroup.appendChild(dotKey);
 const actions = [
   {
     name: "clear",
-    symbol: "C",
+    symbol: "AC",
     function: () => {
       display.textContent = "";
+      input = "";
+      calcResult = null;
+      console.clear();
     },
   },
   {
@@ -82,4 +110,27 @@ operators.forEach((operator) => {
   div.setAttribute("id", operator.name);
   div.textContent = operator.symbol;
   operatorGroup.appendChild(div);
+  div.addEventListener("click", () => {
+    clearDisplay = true;
+    if (calcResult) {
+      inputA = calcResult;
+    }
+    if (!inputA) {
+      inputA = input;
+      input = "";
+    } else {
+      inputB = input;
+      input = "";
+    }
+    if (inputA && inputB) {
+      calcResult = parseFloat(inputA) + parseFloat(inputB);
+      inputA = inputB = null;
+    }
+    if (operator.name === "equal") {
+      display.textContent = calcResult;
+    } else {
+      div.style.background = primaryColor;
+      div.style.color = accentColor;
+    }
+  });
 });
