@@ -13,6 +13,7 @@ const accentColor = bodyStyle.getPropertyValue("--accent");
 let input = "";
 let inputA;
 let inputB;
+let calcMode;
 let calcResult;
 
 // States
@@ -37,7 +38,7 @@ for (i = 9; i >= 0; i--) {
   // Add number to display
   div.addEventListener("click", () => {
     resetOperators();
-    clearDisplay ? (display.textContent = "") : null;
+    if (clearDisplay) (display.textContent = "") && (clearDisplay = false);
     display.textContent += keyNumber;
     input += keyNumber;
   });
@@ -58,6 +59,7 @@ const actions = [
       display.textContent = "";
       input = "";
       calcResult = null;
+      resetOperators();
       console.clear();
     },
   },
@@ -112,25 +114,38 @@ operators.forEach((operator) => {
   operatorGroup.appendChild(div);
   div.addEventListener("click", () => {
     clearDisplay = true;
-    if (calcResult) {
-      inputA = calcResult;
-    }
-    if (!inputA) {
-      inputA = input;
-      input = "";
-    } else {
-      inputB = input;
-      input = "";
-    }
-    if (inputA && inputB) {
-      calcResult = parseFloat(inputA) + parseFloat(inputB);
-      inputA = inputB = null;
-    }
-    if (operator.name === "equal") {
-      display.textContent = calcResult;
-    } else {
+    // Get result from previous calculation
+    if (calcResult) inputA = calcResult;
+    if (input && operator.name !== "equal") {
+      calcMode = operator.name;
       div.style.background = primaryColor;
       div.style.color = accentColor;
     }
+
+    // Assign input to calculation pair
+    !inputA
+      ? (inputA = input) && (input = "")
+      : (inputB = input) && (input = "");
+
+    if (inputA && inputB) {
+      // Convert strings to numbers
+      inputA = parseInt(inputA);
+      inputB = parseInt(inputB);
+      // Do the math and get result
+      if (calcMode === "add") {
+        calcResult = inputA + inputB;
+      } else if (calcMode === "subtract") {
+        calcResult = inputA - inputB;
+      } else if (calcMode === "multiply") {
+        calcResult = inputA * inputB;
+      } else if (calcMode === "divide") {
+        calcResult = inputA / inputB;
+      }
+      console.table({ a: inputA, mode: calcMode, b: inputB, res: calcResult });
+      inputA = inputB = null;
+    }
+
+    // Show results in display
+    if (operator.name === "equal") display.textContent = calcResult;
   });
 });
