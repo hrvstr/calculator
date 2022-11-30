@@ -19,6 +19,13 @@ let calcResult;
 // States
 let clearDisplay = false;
 
+// let test = "-1";
+// console.log(test);
+// test += ",1";
+// console.log(test);
+// test = parseFloat(test);
+// console.log(test);
+
 function resetOperators() {
   operatorGroup.querySelectorAll("div").forEach((key) => {
     key.style.background = accentColor;
@@ -37,8 +44,14 @@ for (i = 9; i >= 0; i--) {
 
   // Add number to display
   div.addEventListener("click", () => {
+    // Remove highlight from active operator key
     resetOperators();
-    if (clearDisplay) (display.textContent = "") && (clearDisplay = false);
+    // Clear display for new input
+    if (clearDisplay) {
+      display.textContent = "";
+      clearDisplay = !clearDisplay;
+    }
+    // Add typed number to display
     display.textContent += keyNumber;
     input += keyNumber;
   });
@@ -49,6 +62,10 @@ const dotKey = document.createElement("div");
 dotKey.classList.add("key");
 dotKey.textContent = ".";
 numberGroup.appendChild(dotKey);
+dotKey.addEventListener("click", () => {
+  input += dotKey.textContent;
+  display.textContent += dotKey.textContent;
+});
 
 // Create action keys
 const actions = [
@@ -66,10 +83,18 @@ const actions = [
   {
     name: "sign",
     symbol: "±",
+    function: () => {
+      input = parseFloat(input) * -1;
+      display.textContent = input;
+    },
   },
   {
     name: "percent",
     symbol: "%",
+    function: () => {
+      input = parseFloat(input) / 100;
+      display.textContent = input;
+    },
   },
 ];
 
@@ -129,8 +154,9 @@ operators.forEach((operator) => {
 
     if (inputA && inputB) {
       // Convert strings to numbers
-      inputA = parseInt(inputA);
-      inputB = parseInt(inputB);
+      inputA = parseFloat(inputA);
+      inputB = parseFloat(inputB);
+
       // Do the math and get result
       if (calcMode === "add") {
         calcResult = inputA + inputB;
