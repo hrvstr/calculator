@@ -54,6 +54,11 @@ body {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  transition: background 0.25s;
+}
+
+.key:active {
+  background: var(--secondary);
 }
 
 #keys {
@@ -82,6 +87,11 @@ body {
 #actions > div {
   background: var(--secondary);
   color: var(--background);
+}
+
+#operators > div:active,
+#actions > div:active {
+  background: var(--primary);
 }
 
 /* Number Block */
