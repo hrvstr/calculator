@@ -77,9 +77,9 @@ const actions = [
     name: "clear",
     symbol: "AC",
     function: () => {
-      display.textContent = "";
       input = "";
-      calcResult = null;
+      display.textContent = "";
+      inputA = inputB = calcResult = null;
       resetOperators();
       console.clear();
     },
@@ -113,29 +113,35 @@ actions.forEach((action) => {
 
 const clearKey = document.getElementById("clear");
 
-// Create operator keys
 const operators = [
   {
     name: "divide",
     symbol: "÷",
+    function: (a, b) => a / b,
   },
   {
     name: "multiply",
     symbol: "×",
+    function: (a, b) => a * b,
   },
   {
     name: "subtract",
     symbol: "-",
+    function: (a, b) => a - b,
   },
   {
     name: "add",
     symbol: "+",
+    function: (a, b) => a + b,
   },
   {
     name: "equal",
     symbol: "=",
   },
 ];
+
+const operate = (operator, a, b) =>
+  operators.find((e) => e.name === operator).function(a, b);
 
 operators.forEach((operator) => {
   const div = document.createElement("div");
@@ -144,40 +150,37 @@ operators.forEach((operator) => {
   div.textContent = operator.symbol;
   operatorGroup.appendChild(div);
   div.addEventListener("click", () => {
+    // Clear display on next number input
     clearDisplay = true;
-    // Get result from previous calculation
-    if (calcResult) inputA = calcResult;
-    if (input && operator.name !== "equal") {
-      calcMode = operator.name;
-      div.style.background = primaryColor;
-      div.style.color = accentColor;
-    }
 
-    // Assign input to calculation pair
+    // Use last result as first input
+    if (calcResult) inputA = calcResult;
+
+    // Assign input pair
     !inputA
       ? (inputA = input) && (input = "")
       : (inputB = input) && (input = "");
 
+    // If input pair is available do calculation
     if (inputA && inputB) {
-      // Convert strings to numbers
       inputA = parseFloat(inputA);
       inputB = parseFloat(inputB);
-
-      // Do the math and get result
-      if (calcMode === "add") {
-        calcResult = inputA + inputB;
-      } else if (calcMode === "subtract") {
-        calcResult = inputA - inputB;
-      } else if (calcMode === "multiply") {
-        calcResult = inputA * inputB;
-      } else if (calcMode === "divide") {
-        calcResult = inputA / inputB;
-      }
+      calcResult = operate(calcMode, inputA, inputB);
       console.table({ a: inputA, mode: calcMode, b: inputB, res: calcResult });
       inputA = inputB = null;
     }
 
-    // Show results in display
-    if (operator.name === "equal") display.textContent = calcResult;
+    if (operator.name !== "equal") {
+      // Set calculation mode
+      calcMode = operator.name;
+      // Highlight active operator key
+      div.style.background = primaryColor;
+      div.style.color = accentColor;
+    }
+
+    // Display result before continuing calculation
+    if (operator.name === "equal" || calcResult) {
+      display.textContent = calcResult;
+    }
   });
 });
