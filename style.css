@@ -3,6 +3,7 @@
   --primary: #fff;
   --secondary: #98989d;
   --tertiary: #323232;
+  --quaternary: #282828;
   --accent: #ff9f0a;
   --radius: 0.5rem;
   --space: 1rem;
@@ -58,7 +59,7 @@ body {
 }
 
 .key:active {
-  background: var(--secondary);
+  background: var(--quaternary);
 }
 
 #keys {

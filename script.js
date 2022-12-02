@@ -28,6 +28,8 @@ function toggleClearDisplay() {
   }
 }
 
+// function toggleClearAll()
+
 function resetOperators() {
   operatorGroup.querySelectorAll("div").forEach((key) => {
     key.style.background = accentColor;
@@ -38,8 +40,13 @@ function resetOperators() {
 function addInput(key) {
   if (clearAll) {
     clearKey.textContent = "C";
+    clearAll = false;
   }
-  display.textContent += key;
+  if (display.textContent === "0") {
+    display.textContent = key;
+  } else {
+    display.textContent += key;
+  }
   input += key;
 }
 
@@ -78,17 +85,21 @@ const actions = [
     symbol: "AC",
     function: () => {
       input = "";
-      display.textContent = "";
-      inputA = inputB = calcResult = null;
-      resetOperators();
-      console.clear();
+      display.textContent = "0";
+      clearKey.textContent = "AC";
+      if (clearAll) {
+        inputA = inputB = calcResult = null;
+        resetOperators();
+        console.clear();
+      }
+      clearAll = true;
     },
   },
   {
     name: "sign",
     symbol: "±",
     function: () => {
-      input = parseFloat(input) * -1;
+      if (input) input = parseFloat(input) * -1;
       display.textContent = input;
     },
   },
@@ -96,7 +107,7 @@ const actions = [
     name: "percent",
     symbol: "%",
     function: () => {
-      input = parseFloat(input) / 100;
+      if (input) input = parseFloat(input) / 100;
       display.textContent = input;
     },
   },
@@ -143,6 +154,10 @@ const operators = [
 const operate = (operator, a, b) =>
   operators.find((e) => e.name === operator).function(a, b);
 
+const convertCalcToString = () => {
+  return;
+};
+
 operators.forEach((operator) => {
   const div = document.createElement("div");
   div.classList.add("key");
@@ -156,7 +171,7 @@ operators.forEach((operator) => {
     // Use last result as first input
     if (calcResult) inputA = calcResult;
 
-    // Assign input pair
+    // Assign input pair and clear input
     !inputA
       ? (inputA = input) && (input = "")
       : (inputB = input) && (input = "");
@@ -166,11 +181,15 @@ operators.forEach((operator) => {
       inputA = parseFloat(inputA);
       inputB = parseFloat(inputB);
       calcResult = operate(calcMode, inputA, inputB);
-      console.table({ a: inputA, mode: calcMode, b: inputB, res: calcResult });
+      console.log(
+        `${inputA} ${
+          operators.find((e) => e.name == calcMode).symbol
+        } ${inputB} = ${calcResult}`
+      );
       inputA = inputB = null;
     }
 
-    if (operator.name !== "equal") {
+    if (operator.name !== "equal" && (inputA || calcResult)) {
       // Set calculation mode
       calcMode = operator.name;
       // Highlight active operator key
@@ -183,4 +202,12 @@ operators.forEach((operator) => {
       display.textContent = calcResult;
     }
   });
+});
+
+// Handle keyboard input
+document.addEventListener("keyup", (event) => {
+  console.log(event.key);
+  // if (event.key == 1) {
+  addInput(event.key);
+  // }
 });
