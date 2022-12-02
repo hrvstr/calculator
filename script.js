@@ -20,6 +20,9 @@ let calcResult;
 let clearDisplay = false;
 let clearAll = true;
 
+// Arrays
+const numKeys = [];
+
 // Functions
 function toggleClearDisplay() {
   if (clearDisplay) {
@@ -27,8 +30,6 @@ function toggleClearDisplay() {
     clearDisplay = !clearDisplay;
   }
 }
-
-// function toggleClearAll()
 
 function resetOperators() {
   operatorGroup.querySelectorAll("div").forEach((key) => {
@@ -38,6 +39,8 @@ function resetOperators() {
 }
 
 function addInput(key) {
+  resetOperators();
+  toggleClearDisplay();
   if (clearAll) {
     clearKey.textContent = "C";
     clearAll = false;
@@ -61,10 +64,11 @@ for (i = 9; i >= 0; i--) {
 
   // Add number to display
   div.addEventListener("click", () => {
-    resetOperators();
-    toggleClearDisplay();
     addInput(keyNumber);
   });
+
+  // Add number to array for keyboard input
+  numKeys.push(i.toString());
 }
 
 // Add dot key to the number group
@@ -73,8 +77,6 @@ dotKey.classList.add("key");
 dotKey.textContent = ".";
 numberGroup.appendChild(dotKey);
 dotKey.addEventListener("click", () => {
-  resetOperators();
-  toggleClearDisplay();
   addInput(dotKey.textContent);
 });
 
@@ -122,44 +124,44 @@ actions.forEach((action) => {
   div.addEventListener("click", action.function);
 });
 
-const clearKey = document.getElementById("clear");
-
 const operators = [
   {
     name: "divide",
     symbol: "÷",
+    key: "/",
     function: (a, b) => a / b,
   },
   {
     name: "multiply",
     symbol: "×",
+    key: "*",
     function: (a, b) => a * b,
   },
   {
     name: "subtract",
     symbol: "-",
+    key: "-",
     function: (a, b) => a - b,
   },
   {
     name: "add",
     symbol: "+",
+    key: "+",
     function: (a, b) => a + b,
   },
   {
     name: "equal",
     symbol: "=",
+    key: "Enter",
   },
 ];
 
 const operate = (operator, a, b) =>
   operators.find((e) => e.name === operator).function(a, b);
 
-const convertCalcToString = () => {
-  return;
-};
-
 operators.forEach((operator) => {
   const div = document.createElement("div");
+  operator.node = div;
   div.classList.add("key");
   div.setAttribute("id", operator.name);
   div.textContent = operator.symbol;
@@ -198,16 +200,29 @@ operators.forEach((operator) => {
     }
 
     // Display result before continuing calculation
-    if (operator.name === "equal" || calcResult) {
+    if ((operator.name === "equal" && input) || calcResult) {
       display.textContent = calcResult;
     }
   });
 });
 
+// TODO: Create reference dynamically
+const clearKey = document.getElementById("clear");
+
 // Handle keyboard input
+const click = new Event("click");
 document.addEventListener("keyup", (event) => {
   console.log(event.key);
-  // if (event.key == 1) {
-  addInput(event.key);
-  // }
+  // Number keys
+  if (numKeys.includes(event.key)) {
+    addInput(event.key);
+  } else if (event.key === ",") {
+    dotKey.dispatchEvent(click);
+  } else if (event.key === "Clear") {
+    clearKey.dispatchEvent(click);
+  } else if (operators.find((operator) => operator.key === event.key)) {
+    operators
+      .find((operator) => operator.key === event.key)
+      .node.dispatchEvent(click);
+  }
 });
