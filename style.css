@@ -5,6 +5,7 @@
   --tertiary: #323232;
   --quaternary: #282828;
   --accent: #ff9f0a;
+  --key: 5rem;
   --radius: 0.5rem;
   --space: 1rem;
 }
@@ -26,11 +27,13 @@ body {
 /* Display */
 
 #display {
+  /* font-family: ui-monospace; */
+  max-width: calc(var(--key) * 4 + var(--space) * 3);
+  min-height: 3rem;
   font-size: 3rem;
-  height: 3rem;
-  display: flex;
+  text-align: right;
   line-height: 1;
-  justify-content: end;
+  overflow-wrap: break-word;
   margin-bottom: var(--space);
 }
 
@@ -46,8 +49,8 @@ body {
   font-size: 1.5rem;
   justify-content: center;
   align-items: center;
-  width: 5rem;
-  height: 5rem;
+  width: var(--key);
+  height: var(--key);
   /* Disable text highlight */
   -webkit-touch-callout: none;
   -webkit-user-select: none;

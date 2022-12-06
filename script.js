@@ -18,39 +18,75 @@ let calcResult;
 
 // States
 let clearDisplay = false;
+let clearOperators = false;
 let clearAll = true;
 
 // Arrays
 const numKeys = [];
 
 // Functions
-function toggleClearDisplay() {
-  if (clearDisplay) {
-    display.textContent = "";
-    clearDisplay = !clearDisplay;
-  }
-}
-
-function resetOperators() {
-  operatorGroup.querySelectorAll("div").forEach((key) => {
-    key.style.background = accentColor;
-    key.style.color = primaryColor;
-  });
-}
-
 function addInput(key) {
   resetOperators();
-  toggleClearDisplay();
+  if (clearDisplay) {
+    display.textContent = "";
+    clearDisplay = false;
+  }
   if (clearAll) {
-    clearKey.textContent = "C";
+    actions.find((item) => item.name === "clear").node.textContent = "C";
     clearAll = false;
   }
-  if (display.textContent === "0") {
+
+  // Add pressed key to input
+  input += key;
+
+  // Display input inside the display
+  if (display.textContent === "0" && key !== dotKey.textContent) {
     display.textContent = key;
   } else {
     display.textContent += key;
   }
-  input += key;
+  handleLargeNumber();
+}
+
+const maxCharLength = 12;
+function handleLargeNumber() {
+  let string = display.textContent;
+  let number = parseFloat(string);
+  // Check if string is a number
+  if (isFinite(number)) {
+    // Check if number has a floating point
+    if (!Number.isInteger(number)) {
+      // Check if floating point is too long
+      if (string.split(dotKey.textContent)[1].length > maxCharLength) {
+        // Trim floating point
+        display.textContent = number.toFixed(maxCharLength);
+      }
+    }
+  }
+  // Trim long integer on input
+  if (string.length >= maxCharLength && calcResult !== number) {
+    display.textContent =
+      "…" +
+      string.substring(string.length - maxCharLength + 1, maxCharLength + 1);
+  }
+  // Trim long integer results
+  else if (number === calcResult) {
+    display.textContent = string.substring(0, maxCharLength);
+  }
+}
+
+function resetOperators() {
+  if (clearOperators) {
+    operatorGroup.querySelectorAll("div").forEach((operator) => {
+      operator.style.background = accentColor;
+      operator.style.color = primaryColor;
+    });
+    clearOperators = false;
+  }
+}
+
+function removeLastChar(string) {
+  return string.substring(0, string.length - 1);
 }
 
 // Create number keys
@@ -77,7 +113,8 @@ dotKey.classList.add("key");
 dotKey.textContent = ".";
 numberGroup.appendChild(dotKey);
 dotKey.addEventListener("click", () => {
-  addInput(dotKey.textContent);
+  if (!display.textContent.includes(dotKey.textContent))
+    addInput(dotKey.textContent);
 });
 
 // Create action keys
@@ -85,16 +122,18 @@ const actions = [
   {
     name: "clear",
     symbol: "AC",
+    key: "Clear",
     function: () => {
       input = "";
       display.textContent = "0";
-      clearKey.textContent = "AC";
+      actions.find((item) => item.name === "clear").node.textContent = "AC";
       if (clearAll) {
         inputA = inputB = calcResult = null;
         resetOperators();
         console.clear();
       }
       clearAll = true;
+      handleLargeNumber();
     },
   },
   {
@@ -122,14 +161,16 @@ actions.forEach((action) => {
   div.textContent = action.symbol;
   actionGroup.appendChild(div);
   div.addEventListener("click", action.function);
+  action.node = div;
 });
 
+// Create operator keys
 const operators = [
   {
     name: "divide",
     symbol: "÷",
     key: "/",
-    function: (a, b) => a / b,
+    function: (a, b) => (b === 0 ? "Error" : a / b),
   },
   {
     name: "multiply",
@@ -169,6 +210,7 @@ operators.forEach((operator) => {
   div.addEventListener("click", () => {
     // Clear display on next number input
     clearDisplay = true;
+    clearOperators = true;
 
     // Use last result as first input
     if (calcResult) inputA = calcResult;
@@ -188,13 +230,15 @@ operators.forEach((operator) => {
           operators.find((e) => e.name == calcMode).symbol
         } ${inputB} = ${calcResult}`
       );
+
       inputA = inputB = null;
     }
 
     if (operator.name !== "equal" && (inputA || calcResult)) {
       // Set calculation mode
       calcMode = operator.name;
-      // Highlight active operator key
+      // Highlight only active operator key
+      resetOperators();
       div.style.background = primaryColor;
       div.style.color = accentColor;
     }
@@ -202,25 +246,40 @@ operators.forEach((operator) => {
     // Display result before continuing calculation
     if ((operator.name === "equal" && input) || calcResult) {
       display.textContent = calcResult;
+      handleLargeNumber();
     }
   });
 });
 
-// TODO: Create reference dynamically
-const clearKey = document.getElementById("clear");
-
 // Handle keyboard input
 const click = new Event("click");
 document.addEventListener("keyup", (event) => {
-  console.log(event.key);
+  // console.log(key.event);
+
   // Number keys
   if (numKeys.includes(event.key)) {
     addInput(event.key);
-  } else if (event.key === ",") {
+  }
+  // Dot key
+  else if (event.key === ",") {
     dotKey.dispatchEvent(click);
-  } else if (event.key === "Clear") {
-    clearKey.dispatchEvent(click);
-  } else if (operators.find((operator) => operator.key === event.key)) {
+  }
+  // Clear key
+  else if (event.key === "Clear") {
+    actions.find((item) => item.name === "clear").node.dispatchEvent(click);
+  }
+  // Remove last input
+  else if (event.key === "Backspace") {
+    if (input) {
+      input = removeLastChar(input);
+      display.textContent = input;
+    } else if (calcResult) {
+      calcResult = removeLastChar(calcResult.toString());
+      display.textContent = calcResult;
+    }
+  }
+  // Operators
+  else if (operators.find((operator) => operator.key === event.key)) {
     operators
       .find((operator) => operator.key === event.key)
       .node.dispatchEvent(click);
