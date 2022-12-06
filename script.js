@@ -49,6 +49,7 @@ function addInput(key) {
 }
 
 const maxCharLength = 12;
+const ellipsis = "…";
 function handleLargeNumber() {
   let string = display.textContent;
   let number = parseFloat(string);
@@ -66,12 +67,12 @@ function handleLargeNumber() {
   // Trim long integer on input
   if (string.length >= maxCharLength && calcResult !== number) {
     display.textContent =
-      "…" +
+      ellipsis +
       string.substring(string.length - maxCharLength + 1, maxCharLength + 1);
   }
   // Trim long integer results
   else if (number === calcResult) {
-    display.textContent = string.substring(0, maxCharLength);
+    display.textContent = string.substring(0, maxCharLength) + ellipsis;
   }
 }
 
