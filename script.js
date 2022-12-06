@@ -21,9 +21,6 @@ let clearDisplay = false;
 let clearOperators = false;
 let clearAll = true;
 
-// Arrays
-const numKeys = [];
-
 // Functions
 function addInput(key) {
   resetOperators();
@@ -48,31 +45,36 @@ function addInput(key) {
   handleLargeNumber();
 }
 
+// Truncate long numbers
 const maxCharLength = 12;
 const ellipsis = "…";
+
 function handleLargeNumber() {
-  let string = display.textContent;
-  let number = parseFloat(string);
-  // Check if string is a number
-  if (isFinite(number)) {
-    // Check if number has a floating point
-    if (!Number.isInteger(number)) {
-      // Check if floating point is too long
-      if (string.split(dotKey.textContent)[1].length > maxCharLength) {
-        // Trim floating point
-        display.textContent = number.toFixed(maxCharLength);
-      }
+  // Trim floats
+  if (
+    isFinite(parseFloat(display.textContent)) &&
+    !Number.isInteger(parseFloat(display.textContent)) &&
+    display.textContent.split(dotKey.textContent)[1].length > maxCharLength
+  )
+    display.textContent = parseFloat(display.textContent).toFixed(
+      maxCharLength
+    );
+
+  // Trim long numbers on input
+  if (display.textContent.length >= maxCharLength) {
+    if (parseFloat(display.textContent) !== calcResult) {
+      display.textContent =
+        ellipsis +
+        display.textContent.substring(
+          display.textContent.length - maxCharLength + 1,
+          maxCharLength + 1
+        );
     }
-  }
-  // Trim long integer on input
-  if (string.length >= maxCharLength && calcResult !== number) {
-    display.textContent =
-      ellipsis +
-      string.substring(string.length - maxCharLength + 1, maxCharLength + 1);
-  }
-  // Trim long integer results
-  else if (number === calcResult) {
-    display.textContent = string.substring(0, maxCharLength) + ellipsis;
+    // Trim long results
+    else if (parseFloat(display.textContent) === calcResult) {
+      display.textContent =
+        display.textContent.substring(0, maxCharLength) + ellipsis;
+    }
   }
 }
 
@@ -91,6 +93,8 @@ function removeLastChar(string) {
 }
 
 // Create number keys
+const numKeys = [];
+
 for (i = 9; i >= 0; i--) {
   const div = document.createElement("div");
   const keyNumber = i;
@@ -130,6 +134,7 @@ const actions = [
       actions.find((item) => item.name === "clear").node.textContent = "AC";
       if (clearAll) {
         inputA = inputB = calcResult = null;
+        clearOperators = true;
         resetOperators();
         console.clear();
       }
